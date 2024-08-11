@@ -7,28 +7,64 @@ import (
 	"net/http"
 )
 
+type ErrorItem struct {
+	IsError      bool
+	ErrorMessage error
+}
+
 type Todo struct {
-	Id    string
+	Id    int
 	Title string
 	Done  bool
 }
 
 type TodoPageData struct {
-	Todos []Todo
+	Todos  []Todo
+	Errors ErrorItem
 }
 
+// Some data
+// Before DB
 var data = TodoPageData{
 	Todos: []Todo{
-		{Id: "T1", Title: "Code a new project", Done: true},
-		{Id: "T2", Title: "Cook a healthier meal", Done: false},
-		{Id: "T3", Title: "Ride more often the bike", Done: false},
+		{Id: 1, Title: "Code a new project", Done: true},
+		{Id: 2, Title: "Cook a healthier meal", Done: false},
+		{Id: 3, Title: "Ride more often the bike", Done: false},
 	},
 }
 
-// Parse and execute the main template
+var err ErrorItem
+
+// Return an error if input is empty
+func handleError(input string) ErrorItem {
+	if len(input) == 0 {
+		return ErrorItem{IsError: true, ErrorMessage: fmt.Errorf("Sorry, I cannot add empty tasks!")}
+	}
+
+	return ErrorItem{IsError: false, ErrorMessage: nil}
+}
+
 func indexHandler(w http.ResponseWriter, r *http.Request) {
-	tmpl := template.Must(template.ParseFiles("view.html"))
+
+	// Parse all html files
+	tmpl := template.Must(template.ParseGlob("*.html"))
+
+	// Process POSTed data
+	if r.Method == http.MethodPost {
+
+		// Process errors
+		data.Errors.IsError = handleError(r.PostFormValue("input_task")).IsError
+		data.Errors.ErrorMessage = handleError(r.PostFormValue("input_task")).ErrorMessage
+
+		// Prevent task adding
+		// If error detected
+		if !data.Errors.IsError {
+			data.Todos = append(data.Todos, Todo{Id: len(data.Todos) + 1, Title: r.PostFormValue("input_task"), Done: false})
+		}
+	}
+
 	tmpl.Execute(w, data)
+	return
 }
 
 // Serve CSS file

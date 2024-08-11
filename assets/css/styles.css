@@ -19,6 +19,18 @@ body {
     font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
 }
 
+.error {
+    color: red;
+    width: var(--width);
+    height: 4rem;
+    background-color: rgb(245, 8, 8, 0.3);
+    border: 1px solid;
+    border-radius: var(--radius);
+    text-align: left;
+    vertical-align: middle;
+    padding: 1rem;
+}
+
 /* Form style */
 .form {
     border-radius: var(--radius);
@@ -78,8 +90,8 @@ body {
 }
 
 .todolist-item {
-    min-width: 70%;
-    border-radius: 10px;
+    min-width: var(--width);
+    border-radius: var(--radius);
     flex-basis: 2.5rem;
     vertical-align: middle;
     padding: 1rem;
@@ -89,3 +101,8 @@ body {
 }
 
 .done { background-color: var(--darkblue-color); }
+
+/* Footer with copyright */
+.footer-p, .aside-infos {
+    color: rgba(125, 125, 125);
+}
