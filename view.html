@@ -10,8 +10,11 @@
 
 <body>
     <aside class="aside-infos">
-        Connected as XXX
+        Connected as {{.Username}}
     </aside>
+    <form action="/logout" class="logout" method="post">
+        <button type="submit" class="logout-btn">Log out</button>
+    </form>
     <h1 class="main-title"><span class="keyword">Todo</span> List</h1>
 
     {{if .Errors.IsError}}

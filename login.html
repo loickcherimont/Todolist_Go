@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Todolist App</title>
+    <link rel="stylesheet" href="/static/css/styles.css"> <!-- href must matched with the StripPrefix from ./main.go -->
+</head>
+
+<body>
+    <h1 class="main-title">Welcome on Todo List</h1>
+
+    {{if .Errors.IsError}}
+        <p class="error">{{.Errors.ErrorMessage}}</p>
+    {{end}}
+
+    <!-- FORM -->
+    <form method="post" class="authentication-form" action="/login">
+
+        <label for="login" class="authentication-label-login">Login</label>
+        <input type="text" id="login" name="login" placeholder="john.doe" class="authentication-input-login"
+            title="Enter your login">
+        <br>
+        <label for="password" class="authentication-label-password">Password</label>
+        <input type="password" id="password" name="password" placeholder="Your password" class="authentication-input-password"
+            title="Enter your password">
+        <button type="submit" class="form-btn-submit">Access to App</button>
+    </form>
+
+    <footer class="footer">
+        <p class="footer-p">&copy; 2024 - Loick Cherimont</p>
+    </footer>
+
+</body>
+
+</html>
