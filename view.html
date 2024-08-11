@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Todolist App</title>
+    <link rel="stylesheet" href="/static/css/styles.css"> <!-- href must matched with the StripPrefix from ./main.go -->
+</head>
+
+<body>
+    <h1 class="main-title"><span class="keyword">Todo</span> List</h1>
+
+    <!-- FORM -->
+    <form method="post" action="file.go" class="form">
+        <label for="inputTask" class="form-label">
+            <input type="text" id="inputTask" name="input_task" placeholder="New task ..." class="form-input" title="Add new task">
+        </label>
+        <button type="submit" class="form-btn-submit">Add</button>
+    </form>
+
+    <!-- TODOLIST -->
+    <div class="container-todolist">
+        <p class="instructions">Click on the <strong class="keyword">done</strong> tasks.</p>
+        <ol class="todolist">
+            {{range .Todos}}
+            <li class="todolist-item {{if .Done}} done {{else}}{{end}}">{{.Title}}</li>
+            {{end}}
+        </ol>
+    </div>
+
+</body>
+
+</html>
