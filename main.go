@@ -1,18 +1,17 @@
 package main
 
 import (
-	"database/sql"
+	"database/sql" // required for db
 	"fmt"
 	"html/template"
 	"log"
 	"net/http"
 	"os"
 
-	"github.com/go-sql-driver/mysql"
+	"github.com/go-sql-driver/mysql" // required for mysql
 )
 
-var db *sql.DB
-
+// ******* STRUCTS *******
 type ErrorItem struct {
 	IsError      bool
 	ErrorMessage error
@@ -36,8 +35,11 @@ type User struct {
 	Password string
 }
 
-// Some data
-// Before DB
+// ******* GLOBAL *******
+var db *sql.DB
+
+// Sample data
+// todo: to insert into DB
 var data = TodoPageData{
 	Todos: []Todo{
 		{Id: 1, Title: "Code a new project", Done: true},
@@ -46,10 +48,56 @@ var data = TodoPageData{
 	},
 	Username: "AdminDev",
 }
-
 var isConnected bool
 
 const PORT string = "3000"
+
+// ******* MAIN *******
+func main() {
+	connectTo("todolist", "mysql")
+	serveStatic()
+
+	http.HandleFunc("/login", loginHandler)
+	http.HandleFunc("/logout", logoutHandler)
+	http.HandleFunc("/app", appHandler)
+
+	fmt.Printf("\nServer OK and listening on http://localhost:%s/login \nTo stop it press, Ctrl+C\n**************************************************", PORT)
+	log.Fatal(http.ListenAndServe(":"+PORT, nil))
+}
+
+// ******* FUNCTIONS *******
+
+// Connect to a database system
+// With the database given in parameter
+func connectTo(dbName, dbSystem string) {
+
+	var err error
+
+	cfg := mysql.Config{
+		User:   os.Getenv("DBUSER"),
+		Passwd: os.Getenv("DBPASS"),
+		Net:    "tcp",
+		Addr:   "127.0.0.1:3306",
+		DBName: dbName,
+	}
+
+	db, err = sql.Open(dbSystem, cfg.FormatDSN())
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	pingErr := db.Ping()
+	if pingErr != nil {
+		log.Fatal(pingErr)
+	}
+	fmt.Printf("\n**************************************************\n\nConnection '%s':\n- Database: %s\n- Result: SUCCESS\n", dbSystem, dbName)
+}
+
+// Handle static files
+func serveStatic() {
+	fs := http.FileServer(http.Dir("assets/"))
+	http.Handle("/static/", http.StripPrefix("/static/", fs))
+}
 
 // Return an error if input is empty
 func handleError(input string) ErrorItem {
@@ -60,50 +108,10 @@ func handleError(input string) ErrorItem {
 	return ErrorItem{IsError: false, ErrorMessage: nil}
 }
 
-// Authentication system before DB
-// Ancient indexHandler
-func loginHandler(w http.ResponseWriter, r *http.Request) {
-
-	var u User
-
-	tmpl := template.Must(template.ParseGlob("*.html"))
-
-	if r.Method == http.MethodPost {
-		username := r.PostFormValue("login")
-		password := r.PostFormValue("password")
-
-		// Retrieve data from DB
-		row := db.QueryRow("SELECT * FROM users WHERE username = ? AND password = ?", username, password)
-
-		// If error is found show error message to user
-		if err := row.Scan(&u.ID, &u.Username, &u.Password); err != nil {
-			if err == sql.ErrNoRows {
-				fmt.Errorf("Connection error : %v", err)
-				data.Errors.ErrorMessage = fmt.Errorf("Login or password is wrong! Retry please!")
-				data.Errors.IsError = true
-			}
-			fmt.Errorf("Connection error : %v", err)
-			data.Errors.ErrorMessage = fmt.Errorf("Login or password is wrong! Retry please!")
-			data.Errors.IsError = true
-			tmpl.ExecuteTemplate(w, "login.html", data)
-			return
-		}
-
-		// Delete previous errors
-		// From login step
-		isConnected = true
-		data.Errors.IsError = false
-		data.Errors.ErrorMessage = nil
-		http.Redirect(w, r, "/app", http.StatusSeeOther)
-		return
-	}
-
-	tmpl.ExecuteTemplate(w, "login.html", data)
-	return
-}
-
+// Change user connection status
+// todo: add sessions
 func logoutHandler(w http.ResponseWriter, r *http.Request) {
-	isConnected = false // Change user connection status
+	isConnected = false
 	http.Redirect(w, r, "/login", http.StatusSeeOther)
 	return
 }
@@ -114,7 +122,7 @@ func appHandler(w http.ResponseWriter, r *http.Request) {
 
 	// Prevent user try to access without authentication
 	if !isConnected {
-		fmt.Fprintln(w, "<h1>Sorry but access denied!</h1>")
+		fmt.Fprintln(w, "<h1 style='color:red;'>Sorry but access denied!</h1>")
 		http.Redirect(w, r, "/login", http.StatusSeeOther)
 		return
 	}
@@ -133,47 +141,47 @@ func appHandler(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	// todo: complete this function using the "ancient indexHandler" block
 	tmpl.ExecuteTemplate(w, "view.html", data)
 	return
 }
 
-// Serve CSS file
-func serveStatic() {
-	fs := http.FileServer(http.Dir("assets/"))
-	http.Handle("/static/", http.StripPrefix("/static/", fs))
-}
+// Authentify user
+// Or just execute login page template
+func loginHandler(w http.ResponseWriter, r *http.Request) {
 
-func main() {
-	connectTo("todolist")
-	serveStatic()
-	http.HandleFunc("/login", loginHandler)
-	http.HandleFunc("/logout", logoutHandler)
-	http.HandleFunc("/app", appHandler)
-	fmt.Printf("\nServer OK and listening on http://localhost:%s/login\n To stop it press, Ctrl+C\n", PORT)
-	log.Fatal(http.ListenAndServe(":"+PORT, nil))
-}
+	var u User // useful?
 
-func connectTo(dbName string) {
-	cfg := mysql.Config{
-		User:   os.Getenv("DBUSER"),
-		Passwd: os.Getenv("DBPASS"),
-		Net:    "tcp",
-		Addr:   "127.0.0.1:3306",
-		DBName: dbName,
+	tmpl := template.Must(template.ParseGlob("*.html"))
+
+	// User connect to the app
+	// todo: separate form handler from login page handler (possible)
+	if r.Method == http.MethodPost {
+		username := r.PostFormValue("login")
+		password := r.PostFormValue("password")
+
+		// Retrieve data from DB
+		row := db.QueryRow("SELECT * FROM users WHERE username = ? AND password = ?", username, password)
+
+		// If error is found, show it using UI message
+		// fix: row is not used, user too
+		if err := row.Scan(&u.ID, &u.Username, &u.Password); err != nil {
+			fmt.Errorf("Connection error : %v", err)
+			data.Errors.ErrorMessage = fmt.Errorf("Login or password is wrong! Retry please!")
+			data.Errors.IsError = true
+			tmpl.ExecuteTemplate(w, "login.html", data)
+			return
+		}
+
+		// The correct user is trying to log in
+		// So delete previous errors
+		// And execute appHandler
+		isConnected = true
+		data.Errors.IsError = false
+		data.Errors.ErrorMessage = nil
+		http.Redirect(w, r, "/app", http.StatusSeeOther)
+		return
 	}
 
-	var err error
-	db, err = sql.Open("mysql", cfg.FormatDSN())
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	pingErr := db.Ping()
-	if pingErr != nil {
-		log.Fatal(pingErr)
-	}
-	fmt.Println("Connected!")
+	tmpl.ExecuteTemplate(w, "login.html", data)
+	return
 }
-
-// Last change : We want to establish a login/logout using DB

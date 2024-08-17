@@ -82,6 +82,7 @@ VALUES
 
 ## :test_tube: Features
 - Security for password in DB (Hash)
+- Create sessions
 
 <!-- 
     LICENSE
