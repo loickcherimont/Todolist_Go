@@ -11,6 +11,7 @@ This is a back-end project type "Todolist" made with Go.
 ## :wrench: Tools
 - Go 1.22.6
 - HTML/CSS
+- MySQL 8.4.2 
 
 <!-- 
     SETUP
@@ -42,12 +43,33 @@ This is a back-end project type "Todolist" made with Go.
 
 ## :warning: Prerequisites
 <!-- Bullet list or simple sentence explaining what contributor needs for this project -->
-*It's coming ...*
+- Add environment variables with DB logins
+```bash
+export DBUSER=your_dbuser
+export DBPASS=your_dbpass
+```
+
+- Complete the DB using bash or directly in MySQL
+```sql
+CREATE DATABASE todolist;
+USE todolist;
+CREATE TABLE users (
+  id         INT AUTO_INCREMENT NOT NULL,
+  username      VARCHAR(255) NOT NULL,
+  password     VARCHAR(255) NOT NULL, #! to modify for Security
+  PRIMARY KEY (`id`)
+);
+
+INSERT INTO users
+  (username, password)
+VALUES
+  ('john.doe', 'test123');
+```
 
 ## :thinking: How does it run ?
 *It's coming ...*
 
-![ExpectResultsAfterSetup](https://placehold.co/300x200)
+![Preview](https://placehold.co/500x300 "Preview of AppName")
 
 <!-- 
     FEATURES
@@ -59,9 +81,8 @@ This is a back-end project type "Todolist" made with Go.
 -->
 
 ## :test_tube: Features
-- Lorem ipsum dolor sit amet
-- Lorem ipsum dolor sit amet
-- Lorem ipsum dolor sit amet
+- Security for password in DB (Hash)
+- Create sessions
 
 <!-- 
     LICENSE
@@ -74,4 +95,4 @@ Developed by Loick Cherimont
 
 Under MIT License  
 
-Last edited on: 2024-08-11
+Last edition: 2024-08-17
