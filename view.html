@@ -4,45 +4,56 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Todolist App</title>
+    <title>Todolist | App</title>
     <link rel="stylesheet" href="/static/css/styles.css"> <!-- warning: href must matched with the StripPrefix from ./main.go -->
+    <link rel="stylesheet" href="/static/css/view.css">
 </head>
 
 <body>
-    <aside class="aside-infos">
-        Connected as {{.Username}}
-    </aside>
-    <form action="/logout" class="logout" method="post">
-        <button type="submit" class="logout-btn">Log out</button>
-    </form>
-    <h1 class="main-title"><span class="keyword">Todo</span> List</h1>
-
-    {{if .Errors.IsError}}
-        <p class="error">{{.Errors.ErrorMessage}}</p>
-    {{end}}
+    
     
 
-    <!-- FORM -->
-    <form method="post" class="form">
-        <label for="inputTask" class="form-label">
-            <input type="text" id="inputTask" name="input_task" placeholder="New task ..." class="form-input" title="Add new task">
-        </label>
-        <button type="submit" class="form-btn-submit">Add</button>
-    </form>
+    <div class="app">
+        <header class="header">
+            <h1 class="main-title"><span class="keyword">Todo</span> List</h1>
+            <aside class="aside">
+                <p class="aside-infos">Connected as <span class="keyword">{{.Username}}</span><p>
+                <!-- use form tag ? -->
+                <form action="/logout" class="logout" method="post">
+                    <button type="submit" class="logout-btn">Log out</button>
+                </form>
+            </aside>
+            
+        </header>
 
-    <!-- TODOLIST -->
-    <div class="container-todolist">
-        <p class="instructions">Click on the <strong class="keyword">done</strong> tasks.</p>
-        <ol class="todolist" id="todoList">
-            {{range .Todos}}
-            <li class="todolist-item {{if .Done}} done{{else}}{{end}}">{{.Id}} - {{.Title}}</li>
-            {{end}}
-        </ol>
+        {{if .Errors.IsError}}
+            <p class="error">{{.Errors.ErrorMessage}}</p>
+        {{end}}
+
+        <!-- FORM -->
+        <form method="post" class="form">
+            <label for="inputTask" class="form-label">
+                <input type="text" id="inputTask" name="input_task" placeholder="New task ..." class="form-input" title="Add new task">
+            </label>
+            <button type="submit" class="form-btn-submit">Add</button>
+        </form>
+
+        <!-- TODOLIST -->
+        <div class="container-todolist">
+            <p class="instructions">Click on the <strong class="keyword">done</strong> tasks.</p>
+            <ol class="todolist" id="todoList">
+                {{range .Todos}}
+                    <li class="todolist-item {{if .Done}} done{{else}}{{end}}">{{.Title}}</li>
+                {{end}}
+            </ol>
+        </div>
     </div>
 
     <footer class="footer">
         <p class="footer-p">&copy; 2024 - Loick Cherimont</p>
     </footer>
+
+    <!-- Simple effect using JS --> 
     <script>
         const todolistItems = document.getElementById("todoList").children;
         // Toggle "done" class 
