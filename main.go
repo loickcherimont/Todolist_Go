@@ -9,6 +9,8 @@ import (
 	"os"
 
 	"github.com/go-sql-driver/mysql" // required for mysql
+	"github.com/gorilla/sessions"
+	"github.com/gorilla/securecookie"
 )
 
 // ******* STRUCTS *******
@@ -48,7 +50,10 @@ var data = TodoPageData{
 	},
 	Username: "AdminDev",
 }
-var isConnected bool
+
+// Generate a random key for cookie
+var key = []byte(securecookie.GenerateRandomKey(32))
+var store = sessions.NewCookieStore(key)
 
 const PORT string = "3000"
 
@@ -61,7 +66,7 @@ func main() {
 	http.HandleFunc("/logout", logoutHandler)
 	http.HandleFunc("/app", appHandler)
 
-	fmt.Printf("\nServer OK and listening on http://localhost:%s/login \nTo stop it press, Ctrl+C\n**************************************************", PORT)
+	fmt.Printf("\nServer OK and listening on http://localhost:%s/login \nTo stop it press, Ctrl+C\n**************************************************\n", PORT)
 	log.Fatal(http.ListenAndServe(":"+PORT, nil))
 }
 
@@ -108,23 +113,31 @@ func handleError(input string) ErrorItem {
 	return ErrorItem{IsError: false, ErrorMessage: nil}
 }
 
-// Change user connection status
-// todo: add sessions
+// Revoke users authentication
 func logoutHandler(w http.ResponseWriter, r *http.Request) {
-	isConnected = false
+	session, _ := store.Get(r, "cookie-name")
+
+	// Close session
+	session.Values["authenticated"] = false
+	
+	if err := session.Save(r, w); err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
 	http.Redirect(w, r, "/login", http.StatusSeeOther)
 	return
 }
 
 func appHandler(w http.ResponseWriter, r *http.Request) {
 
+	session, _ := store.Get(r, "cookie-name")
+
 	tmpl := template.Must(template.ParseFiles("view.html"))
 
 	// Prevent user try to access without authentication
-	if !isConnected {
-		fmt.Fprintln(w, "<h1 style='color:red;'>Sorry but access denied!</h1>")
-		http.Redirect(w, r, "/login", http.StatusSeeOther)
-		return
+	if auth, ok := session.Values["authenticated"].(bool); !ok || !auth {
+		http.Redirect(w, r, "/login", http.StatusForbidden)
+		return 
 	}
 
 	// Process POSTed data
@@ -156,6 +169,11 @@ func loginHandler(w http.ResponseWriter, r *http.Request) {
 	// User connect to the app
 	// todo: separate form handler from login page handler (possible)
 	if r.Method == http.MethodPost {
+
+		// Start new session
+		session, _ := store.Get(r, "cookie-name")
+
+		// Authentication
 		username := r.PostFormValue("login")
 		password := r.PostFormValue("password")
 
@@ -172,10 +190,15 @@ func loginHandler(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		// The correct user is trying to log in
-		// So delete previous errors
+		// Set user as authenticated
+		// Remove previous errors
 		// And execute appHandler
-		isConnected = true
+		session.Values["authenticated"] = true
+		if err := session.Save(r, w); err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+
 		data.Errors.IsError = false
 		data.Errors.ErrorMessage = nil
 		http.Redirect(w, r, "/app", http.StatusSeeOther)

@@ -82,7 +82,6 @@ VALUES
 
 ## :test_tube: Features (for v1)
 - Security for password in DB (Hash)
-- Create sessions
 - Complete the README.md
 
 <!-- 
