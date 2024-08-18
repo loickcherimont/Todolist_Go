@@ -4,7 +4,6 @@
     --main-color: rgb(0, 119, 239);
     --width: 70%;
     --radius: 10px;
-	--phone-max-width: 768px;
 }
 
 body {
@@ -39,6 +38,17 @@ body {
 	max-width: 100%;
 }
 
+.form-btn-submit {
+    padding: 0.45rem 1rem;
+    width: max-content;
+    border-style: none;
+    border-radius: var(--radius);
+    cursor: pointer;
+    font-size: 1rem;
+    background-color: var(--main-color);
+    color: white;
+}
+
 /* LOGOUT */
 .aside {
 	display: flex;
@@ -69,7 +79,7 @@ body {
 }
 
 .instructions {
-    font-size: 1.5rem;
+    font-size: 1.25rem;
     margin:  1.5rem 0;
 }
 
@@ -104,8 +114,9 @@ body {
 }
 
 /* RESPONSIVE DETAILS */
-@media screen and (max-width: 768px) {
+/* Adapt to tablets and smaller screens  */
+@media screen and (max-width: 980px) {
 	.todolist-item {
-		width: inherit;
+		width: 100%;
 	}
 }
