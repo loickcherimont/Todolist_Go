@@ -38,7 +38,7 @@ This is a back-end project type "Todolist" made with Go.
 -->
 
 ## :inbox_tray: Setup
-
+<!-- Imagine you're an user to complete this paragraph -->
 *It's coming ...*
 
 ## :warning: Prerequisites
@@ -56,14 +56,14 @@ USE todolist;
 CREATE TABLE users (
   id         INT AUTO_INCREMENT NOT NULL,
   username      VARCHAR(255) NOT NULL,
-  password     VARCHAR(255) NOT NULL, #! to modify for Security
+  password     VARCHAR(255) NOT NULL, 
   PRIMARY KEY (`id`)
 );
 
 INSERT INTO users
   (username, password)
 VALUES
-  ('john.doe', 'test123');
+  ('john.doe', '***yourpassword**'); # for test: test123
 ```
 
 ## :thinking: How does it run ?
@@ -81,8 +81,9 @@ VALUES
 -->
 
 ## :test_tube: Features (for v1)
-- Security for password in DB (Hash)
 - Complete the README.md
+- Style the login page
+- Responsive the app
 
 <!-- 
     LICENSE

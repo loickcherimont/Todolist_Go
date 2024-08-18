@@ -56,6 +56,7 @@ var key = []byte(securecookie.GenerateRandomKey(32))
 var store = sessions.NewCookieStore(key)
 
 const PORT string = "3000"
+const CRYPTCOST int = 14
 
 // ******* MAIN *******
 func main() {
@@ -170,9 +171,6 @@ func loginHandler(w http.ResponseWriter, r *http.Request) {
 	// todo: separate form handler from login page handler (possible)
 	if r.Method == http.MethodPost {
 
-		// Start new session
-		session, _ := store.Get(r, "cookie-name")
-
 		// Authentication
 		username := r.PostFormValue("login")
 		password := r.PostFormValue("password")
@@ -181,7 +179,6 @@ func loginHandler(w http.ResponseWriter, r *http.Request) {
 		row := db.QueryRow("SELECT * FROM users WHERE username = ? AND password = ?", username, password)
 
 		// If error is found, show it using UI message
-		// fix: row is not used, user too
 		if err := row.Scan(&u.ID, &u.Username, &u.Password); err != nil {
 			fmt.Errorf("Connection error : %v", err)
 			data.Errors.ErrorMessage = fmt.Errorf("Login or password is wrong! Retry please!")
@@ -189,6 +186,9 @@ func loginHandler(w http.ResponseWriter, r *http.Request) {
 			tmpl.ExecuteTemplate(w, "login.html", data)
 			return
 		}
+
+		// Start new session
+		session, _ := store.Get(r, "cookie-name")
 
 		// Set user as authenticated
 		// Remove previous errors
@@ -208,3 +208,4 @@ func loginHandler(w http.ResponseWriter, r *http.Request) {
 	tmpl.ExecuteTemplate(w, "login.html", data)
 	return
 }
+
