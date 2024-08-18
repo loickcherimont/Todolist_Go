@@ -2,36 +2,40 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Todolist App</title>
-    <link rel="stylesheet" href="/static/css/styles.css"> <!-- href must matched with the StripPrefix from ./main.go -->
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Todolist | App</title>
+    <link rel="stylesheet" href="/static/css/styles.css" /> <!-- href must matched with the StripPrefix from ./main.go -->
+    <link rel="stylesheet" href="/static/css/login.css" />
 </head>
 
 <body>
-    <h1 class="main-title">Welcome on Todo List</h1>
+    <div class="app">
+        <h1 class="main-title">Let's <span class="keyword">Todo</span> ✅</h1>
+        {{if .Errors.IsError}}
+            <p class="error">{{.Errors.ErrorMessage}}</p>
+        {{end}}
 
-    {{if .Errors.IsError}}
-        <p class="error">{{.Errors.ErrorMessage}}</p>
-    {{end}}
+        <!-- FORM -->
+        <form method="post" class="authentication-form" action="/login">
+            <div class="input-containers">
+                <label for="login" class="authentication-label-login labels">Username</label>
+                <input type="text" id="login" name="login" placeholder="john.doe" class="authentication-input-login inputs"
+            title="Enter your login" />
+            </div>
 
-    <!-- FORM -->
-    <form method="post" class="authentication-form" action="/login">
-
-        <label for="login" class="authentication-label-login">Login</label>
-        <input type="text" id="login" name="login" placeholder="john.doe" class="authentication-input-login"
-            title="Enter your login">
-        <br>
-        <label for="password" class="authentication-label-password">Password</label>
-        <input type="password" id="password" name="password" placeholder="Your password" class="authentication-input-password"
-            title="Enter your password">
-        <button type="submit" class="form-btn-submit">Access to App</button>
-    </form>
-
+            <div class="input-containers">
+                <label for="password" class="authentication-label-password labels">Password</label>
+                <input type="password" id="password" name="password" placeholder="Your password" class="authentication-input-password inputs"
+            title="Enter your password inputs" />  
+            </div>
+            <button type="submit" class="form-btn-submit">Access to App</button>
+        </form>
+    </div>
+    <hr/>
     <footer class="footer">
         <p class="footer-p">&copy; 2024 - Loick Cherimont</p>
     </footer>
-
 </body>
 
 </html>

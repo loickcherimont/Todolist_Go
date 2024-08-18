@@ -1,6 +1,6 @@
 # TodoList_Go
 
-![Preview](https://placehold.co/500x300 "Preview of AppName")
+![Preview](github/preview.png "Preview of Todolist")
 
 
 ## :information_source: About  
@@ -13,33 +13,44 @@ This is a back-end project type "Todolist" made with Go.
 - HTML/CSS
 - MySQL 8.4.2 
 
-<!-- 
-    SETUP
-    Explain using command lines, the steps to follow to setup the project
-    At the end show, the expected result with a image   
 
-    Ex: 
-    1. Download the whole project `Travel` on your system
-    2. Open your terminal in `Travel`
-    ```
-    cd Travel
-    ```
-    3. In `Travel` directory, run:
-    ```
-    go run github.com/loickcherimont/Travel/main
-    ```
-    4. If there is no error. Go on your favorite browser and use this line in your URL address bar
-    ```
-    http://localhost:8080/travel
-    ```
-    5. Here you are! Welcome in the main page of the Web application
+## :inbox_tray: Setup for contributions
 
-    ![Main page of the application](assets/images/readme_images/mainpage.png)
--->
+1. Open a terminal and paste these lines
 
-## :inbox_tray: Setup
-<!-- Imagine you're an user to complete this paragraph -->
-*It's coming ...*
+```bash
+git clone git@github:loickcherimont/Todolist_Go
+
+```
+
+2. Go in the project and run it
+
+```bash
+# ./Todolist_Go
+
+go get .
+
+# Linux
+go build main.go && go run ./main
+
+# Windows
+go build main.go && go run main.exe
+```
+
+3. Your terminal display : 
+```bash
+**************************************************
+
+Connection 'mysql':
+- Database: todolist
+- Result: SUCCESS
+
+Server OK and listening on http://localhost:3000/login 
+To stop it press, Ctrl+C
+**************************************************
+```
+
+Click on http://localhost:3000/login `, you are going to redirected on the login page.
 
 ## :warning: Prerequisites
 <!-- Bullet list or simple sentence explaining what contributor needs for this project -->
@@ -67,29 +78,19 @@ VALUES
 ```
 
 ## :thinking: How does it run ?
-*It's coming ...*
 
-![Preview](https://placehold.co/500x300 "Preview of AppName")
+Enter in your todolist account and create a task.
+To test, to connect you have to use `username: john.doe` and `password:test123`.  
+Good usage!  
+Your contributions are welcome!  
 
-<!-- 
-    FEATURES
-    List of the main new features, fixes to bring on the project
+![Preview](github/preview.png "Preview of Todolist")
 
-    Ex:
-    - Setup Night/Day mode
-    - Add animation when music is playing
--->
 
 ## :test_tube: Features (for v1)
-- Complete the README.md
-- Style the login page
-- Responsive the app
+- Classic re-structuring (GO > Static files)
 
-<!-- 
-    LICENSE
-    Write Developer name with used license
- -->
- 
+
 ## :key: License
 
 Developed by Loick Cherimont  
