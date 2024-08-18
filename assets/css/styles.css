@@ -24,7 +24,7 @@ body {
     color: red;
     width: var(--width);
     height: 4rem;
-    background-color: rgb(245, 8, 8, 0.3);
+    background-color: rgb(245, 8, 8);
     border: 1px solid;
     border-radius: var(--radius);
     text-align: left;
@@ -110,13 +110,13 @@ body {
 
 /* -- Login page -- */
 
-.logout-btn {
+/* Why is it here? */
+.logout-btn { 
     padding: 0.45rem 1rem;
     width: 7rem;
     border-style: none;
     border-radius: var(--radius);
     font-size: 1rem;
-    /* background-color: rgb(187, 12, 12); */
     background-color: red;
     color: white;
     position: absolute;

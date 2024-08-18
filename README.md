@@ -1,6 +1,6 @@
 # TodoList_Go
 
-![Preview](https://placehold.co/500x300 "Preview of AppName")
+![Preview](github/preview.png "Preview of Todolist")
 
 
 ## :information_source: About  
@@ -69,7 +69,7 @@ VALUES
 ## :thinking: How does it run ?
 *It's coming ...*
 
-![Preview](https://placehold.co/500x300 "Preview of AppName")
+![Preview](github/preview.png "Preview of Todolist")
 
 <!-- 
     FEATURES
