@@ -19,7 +19,7 @@ This is a back-end project type "Todolist" made with Go.
 1. Open a terminal and paste these lines
 
 ```bash
-git clone git@github:loickcherimont/Todolist_Go
+git clone git@github.com:loickcherimont/Todolist_Go.git
 
 ```
 
